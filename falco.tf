@@ -1,47 +1,53 @@
-resource "kubernetes_deployment" "falco_deployment" {
+resource "kubernetes_namespace" "falco" {
   metadata {
     name = "falco"
   }
+}
 
-  spec {
-    selector {
-      match_labels = {
-        app = "falco"
-      }
-    }
+resource "kubernetes_config_map" "falco_rules_configmap" {
+  metadata {
+    name      = "falco-rules-configmap"
+    namespace = kubernetes_namespace.falco.metadata[0].name
+  }
 
-    template {
-      metadata {
-        labels = {
-          app = "falco"
-        }
-      }
-
-      spec {
-        container {
-          name  = "falco"
-          image = "falcosecurity/falco"
-        }
-      }
-    }
+  data = {
+    "falco_rules.yaml" = file("${path.module}/falco_rules.yaml")
   }
 }
 
-resource "kubernetes_service" "falco_service" {
-  metadata {
-    name = "falco-service"
+resource "helm_release" "falco" {
+  name       = "falco"
+  namespace  = kubernetes_namespace.falco.metadata[0].name
+  repository = "falcosecurity"
+  chart      = "falco"
+
+  set {
+    name  = "driver.kind"
+    value = "ebpf"
   }
 
-  spec {
-    selector = {
-      app = "falco"
-    }
+  set {
+    name  = "tty"
+    value = "true"
+  }
 
-    port {
-      port        = 80
-      target_port = 80
-    }
+  set {
+    name  = "falcosidekick.enabled"
+    value = "true"
+  }
 
-    type = "ClusterIP"
+  set {
+    name  = "falcosidekick.config.slack.webhookurl"
+    value = "falcosidekick.config.slack.webhookurl="https://hooks.slack.com/services/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""
+  }
+
+  set {
+    name  = "falcosidekick.config.slack.minimumpriority"
+    value = "notice"
+  }
+
+  set {
+    name  = "falcosidekick.config.customfields"
+    value = "user:ashar"
   }
 }

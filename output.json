@@ -1,0 +1,22 @@
+{
+  "kubernetes_cluster_host": {
+    "sensitive": false,
+    "type": "string",
+    "value": "34.123.67.191"
+  },
+  "kubernetes_cluster_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "devops-iz-gke"
+  },
+  "project_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "devops-iz"
+  },
+  "region": {
+    "sensitive": false,
+    "type": "string",
+    "value": "us-central1"
+  }
+}

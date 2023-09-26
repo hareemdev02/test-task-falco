@@ -1,0 +1,6 @@
+extraRules:
+  - rule: FileCreatedInTmp
+    desc: "Alert on file creation in /tmp directory"
+    condition: fd.directory = "/tmp" and evt.type = file_create
+    output: "File created in /tmp directory by process: %proc.name (user: %user.name)"
+    priority: WARNING

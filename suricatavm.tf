@@ -11,9 +11,11 @@ resource "google_compute_instance" "suricata_vm" {
   }
 
   network_interface {
-    network = google_compute_network.vpc.name
-    access_config {}
+
+    network = "${var.project_id}-vpc1"
+    subnetwork = "${var.project_id}-subnet1"
   }
 
+  allow_stopping_for_update = true
   metadata_startup_script = var.suricata_startup_script
 }

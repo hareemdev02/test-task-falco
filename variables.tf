@@ -17,7 +17,7 @@ variable "gke_password" {
 }
 
 variable "gke_num_nodes" {
-  default     = 3
+  default     = 2
   description = "number of GKE nodes"
 }
 
